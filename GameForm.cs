@@ -115,6 +115,9 @@ namespace RetroGameFramework
 
             this.Text = Initializer.Title;
 
+            this.DoubleBuffered = true;
+            SetStyle(ControlStyles.UserPaint, true);
+
             OnRefreshMatrix();
             OnRefreshBrushes();
         }
