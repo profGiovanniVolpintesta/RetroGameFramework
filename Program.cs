@@ -13,20 +13,32 @@ namespace RetroGameFramework
     {
         static void Main(string[] args)
         {
-            //bool[,] matrix = new bool[64, 48];
-            bool[,] matrix = new bool[30, 30];
 
-            matrix[matrix.GetLength(0) / 2 - 1, matrix.GetLength(1) / 2 - 1] = true;
-            matrix[matrix.GetLength(0) / 2, matrix.GetLength(1) / 2 - 1] = true;
-            matrix[matrix.GetLength(0) / 2 - 1, matrix.GetLength(1) / 2] = true;
-            matrix[matrix.GetLength(0) / 2, matrix.GetLength(1) / 2] = true;
+            // INITIALIZE GAME CONFIGS
 
-            matrix[0, 0] = true;
-            matrix[matrix.GetLength(0) - 1, 0] = true;
-            matrix[0, matrix.GetLength(1) - 1] = true;
+            GameForm.Initializer.Title = "Retro Game";
+            GameForm.Initializer.PixelSize = 8;
+            GameForm.Initializer.BackgroundColor = System.Drawing.Color.Black;
+            //GameForm.Initializer.ForegroundColor = System.Drawing.Color.White;
+            GameForm.Initializer.ForegroundColor = System.Drawing.Color.FromArgb(255, 255, 255);
+            GameForm.Initializer.AdditionalColors = new System.Drawing.Color[] { System.Drawing.Color.Yellow, System.Drawing.Color.Green};
+
+            // CREATE GAME MATRIX
+            int[,] matrix = new int[64, 48];
+
+            // SET COLORS IN THE MATRIX
+            matrix[matrix.GetLength(0) / 2 - 1, matrix.GetLength(1) / 2 - 1] = 1;
+            matrix[matrix.GetLength(0) / 2, matrix.GetLength(1) / 2 - 1] = 1;
+            matrix[matrix.GetLength(0) / 2 - 1, matrix.GetLength(1) / 2] = 1;
+            matrix[matrix.GetLength(0) / 2, matrix.GetLength(1) / 2] = 1;
+
+            matrix[0, 0] = 2;
+            matrix[matrix.GetLength(0) - 1, 0] = 3;
+            matrix[0, matrix.GetLength(1) - 1] = 4;
             //matrix[matrix.GetLength(0) - 1, matrix.GetLength(1) - 1] = true;
 
-            Application.Run(new GameForm(matrix));
+            Form gameForm = new GameForm(matrix);
+            Application.Run(gameForm);
         }
     }
 }

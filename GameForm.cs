@@ -18,6 +18,8 @@ namespace RetroGameFramework
             public static int PixelSize = 10;
             public static Color BackgroundColor = Color.Black;
             public static Color ForegroundColor = Color.White;
+            public static Color[] AdditionalColors = new Color[0];
+            public static Color InvalidColor = Color.Magenta;
             public static string Title = "My Retro Game";
         }
 
@@ -31,8 +33,8 @@ namespace RetroGameFramework
             }
         }
 
-        private bool[,] _matrix = null;
-        public bool[,] Matrix
+        private int[,] _matrix = null;
+        public int[,] Matrix
         {
             get { return _matrix; }
             set
@@ -62,16 +64,57 @@ namespace RetroGameFramework
             }
         }
 
-        private Brush foreBrush = null;
-        private Brush backBrush = null;
+        private Color[] _additionalColors;
 
-        public GameForm(bool[,] matrix) : base()
+        public Color[] AdditionalColors
+        {
+            get
+            {
+                Color[] copy = new Color[_additionalColors.Length];
+                for (int i = 0; i < copy.Length; i++) copy[i] = _additionalColors[i];
+                return copy;
+            }
+            set
+            {
+                _additionalColors = new Color[value != null ? value.Length : 0];
+                for (int i = 0; i < _additionalColors.Length; i++) _additionalColors[i] = value[i];
+                OnRefreshBrushes();
+            }
+        }
+
+        private Color _invalidColor;
+        public Color InvalidColor
+        {
+            get { return _invalidColor; }
+            set { _invalidColor = value; }
+        }
+
+        private Brush[] _brushes;
+        private Brush _invalidColorBrush;
+        public Brush GetBrush (int index)
+        {
+            // clampa l'indice all'interno dei valori possibili
+            return (index >= 0 && index < _brushes.Length) ? _brushes[index] : _invalidColorBrush;
+        }
+        public Brush GetBackBrush() { return GetBrush(0); }
+        public Brush GetForeBrush() { return GetBrush(1); }
+
+        public GameForm(int[,] matrix) : base()
         {
             _matrix = matrix;
+
             base.BackColor = Initializer.BackgroundColor;
             base.ForeColor = Initializer.ForegroundColor;
+
+            _additionalColors = new Color[Initializer.AdditionalColors.Length];
+            for (int i = 0; i < _additionalColors.Length; i++) _additionalColors[i] = Initializer.AdditionalColors[i];
+
+            _invalidColor = Initializer.InvalidColor;
+
             this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+
             this.Text = Initializer.Title;
+
             OnRefreshMatrix();
             OnRefreshBrushes();
         }
@@ -83,8 +126,22 @@ namespace RetroGameFramework
 
         private void OnRefreshBrushes()
         {
-            foreBrush = new SolidBrush(ForeColor);
-            backBrush = new SolidBrush(BackColor);
+            int count = _additionalColors != null ? _additionalColors.Length : 0;
+            count += 2; // Include background and foreground
+            _brushes = new Brush[count];
+
+            _brushes[0] = new SolidBrush(this.BackColor);
+            _brushes[1] = new SolidBrush(this.ForeColor);
+
+            if (_additionalColors != null)
+            {
+                for (int i = 0; i < _additionalColors.Length; i++)
+                {
+                    _brushes[i + 2] = new SolidBrush(_additionalColors[i]);
+                }
+            }
+
+            _invalidColorBrush = new SolidBrush(_invalidColor);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -95,7 +152,7 @@ namespace RetroGameFramework
             {
                 for (int y = 0; y < Matrix.GetLength(1); y++)
                 {
-                    e.Graphics.FillRectangle(Matrix[x, y] ? foreBrush : backBrush, x * PixelSize, y * PixelSize, PixelSize, PixelSize);
+                    e.Graphics.FillRectangle(GetBrush(Matrix[x, y]), x * PixelSize, y * PixelSize, PixelSize, PixelSize);
                 }
             }            
         }
