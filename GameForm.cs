@@ -13,17 +13,7 @@ namespace RetroGameFramework
 {
     internal class GameForm : Form
     {
-        public static class Initializer
-        {
-            public static int PixelSize = 10;
-            public static Color BackgroundColor = Color.Black;
-            public static Color ForegroundColor = Color.White;
-            public static Color[] AdditionalColors = new Color[0];
-            public static Color InvalidColor = Color.Magenta;
-            public static string Title = "My Retro Game";
-        }
-
-        private int _pixelSize = Initializer.PixelSize;
+        private int _pixelSize = 1;
         public int PixelSize {
             get { return _pixelSize; }
             set
@@ -99,21 +89,22 @@ namespace RetroGameFramework
         public Brush GetBackBrush() { return GetBrush(0); }
         public Brush GetForeBrush() { return GetBrush(1); }
 
-        public GameForm(int[,] matrix) : base()
+        public GameForm(GameConfig GameConfig, int[,] matrix) : base()
         {
             _matrix = matrix;
 
-            base.BackColor = Initializer.BackgroundColor;
-            base.ForeColor = Initializer.ForegroundColor;
+            _pixelSize = GameConfig.PixelSize;
+            base.BackColor = GameConfig.BackgroundColor;
+            base.ForeColor = GameConfig.ForegroundColor;
 
-            _additionalColors = new Color[Initializer.AdditionalColors.Length];
-            for (int i = 0; i < _additionalColors.Length; i++) _additionalColors[i] = Initializer.AdditionalColors[i];
+            _additionalColors = new Color[GameConfig.AdditionalColors.Length];
+            for (int i = 0; i < _additionalColors.Length; i++) _additionalColors[i] = GameConfig.AdditionalColors[i];
 
-            _invalidColor = Initializer.InvalidColor;
+            _invalidColor = GameConfig.InvalidColor;
 
             this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
 
-            this.Text = Initializer.Title;
+            this.Text = GameConfig.Title;
 
             this.DoubleBuffered = true;
             SetStyle(ControlStyles.UserPaint, true);
