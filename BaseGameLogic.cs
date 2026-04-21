@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Windows.Input;
 
@@ -7,8 +8,8 @@ namespace RetroGameFramework
 {
     internal class BaseGameLogic
     {
-        private GameConfig _gameConfig;
-        public GameConfig GameConfig { get { return _gameConfig; } }
+        private static GameConfig _gameConfig;
+        public static GameConfig GameConfig { get { return _gameConfig; } }
 
         private List<Keys> _pressedKeys;
         private List<Keys> _releasedKeys;
@@ -18,6 +19,27 @@ namespace RetroGameFramework
         private bool _paused = false;
         public bool IsPaused() { return _paused; }
         public void SetPaused (bool paused) { _paused = paused; }
+
+        private int _frameCount = 0;
+        // Returns the total frames count from the start of the application. 
+        public int FrameCount { get { return _frameCount; } }
+
+        private int _frameCountRunning = 0;
+        // Returns the frames count from the start of the application, excluding paused frames. 
+        public int FrameCountRunning { get { return _frameCountRunning; } }
+        // Returns the paused frames count from the start of the application. 
+        public int FrameCountPaused { get { return _frameCount - _frameCountRunning; } }
+
+        private float _elapsedTime = 0;
+        // Returns the total elapsed time, in seconds, from the start of the application. 
+        public float ElapsedTime { get { return _elapsedTime; } }
+
+        private float _elapsedTimeRunning = 0;
+        // Returns the total elapsed time, in seconds, from the start of the application, excluding when the paused time intervals. 
+        public float ElapsedTimeRunning { get { return _elapsedTimeRunning; } }
+        // Returns the elapsed paused time, in seconds, from the start of the application. 
+        public float ElapsedTimePaused { get { return _elapsedTime - _elapsedTimeRunning; } }
+
 
         // CREATE GAME MATRIX
         static void Main(string[] args)
@@ -33,8 +55,17 @@ namespace RetroGameFramework
 
             bool continueGame = true;
 
+            DateTime startGameTime = DateTime.UtcNow;
+
+            TimeSpan timeAtPreviousFrame;
+            TimeSpan timeAtThisFrame = TimeSpan.Zero;
+            GameLogic._frameCount = 0;
+            GameLogic._frameCountRunning = 0;
+            GameLogic._elapsedTime = 0;
+            GameLogic._elapsedTimeRunning = 0;
+
             GameLogic.StartGame(gameForm, PixelsMatrix);
-            GameLogic.LoopGame(PixelsMatrix);
+            GameLogic.LoopGame(PixelsMatrix, 0);
             gameForm.Invalidate();
             gameForm.Update();
 
@@ -44,6 +75,17 @@ namespace RetroGameFramework
             {
                 if (continueGame)
                 {
+                    timeAtPreviousFrame = timeAtThisFrame;
+                    timeAtThisFrame = DateTime.UtcNow - startGameTime;
+                    float deltaTime = (float)(timeAtThisFrame - timeAtPreviousFrame).TotalSeconds;
+                    GameLogic._frameCount++;
+                    GameLogic._elapsedTime += deltaTime;
+                    if (!GameLogic.IsPaused())
+                    {
+                        GameLogic._frameCountRunning++;
+                        GameLogic._elapsedTimeRunning += deltaTime;
+                    }
+
                     gameForm.Invoke(new Action(() =>
                     {
                         // This is done in the gameForm owner thread (the main thread)
@@ -57,7 +99,7 @@ namespace RetroGameFramework
 
                     if (!GameLogic.IsPaused())
                     {
-                        GameLogic.LoopGame(PixelsMatrix);
+                        GameLogic.LoopGame(PixelsMatrix, deltaTime);
                     }
                 }
                 else
@@ -93,15 +135,15 @@ namespace RetroGameFramework
         }
         protected virtual void OnStartGame(int[,] pixels) { }
 
-        private void LoopGame(int[,] pixels)
+        private void LoopGame(int[,] pixels, float deltaTime)
         {
             OnClear(pixels);
-            OnLoopGame();
+            OnLoopGame(deltaTime);
             OnDraw(pixels);
         }
 
         protected virtual void OnClear(int[,] pixels) { }
-        protected virtual void OnLoopGame() { }
+        protected virtual void OnLoopGame(float deltaTime) { }
         protected virtual void OnDraw(int[,] pixels) { }
 
         private void EndGame(Form gameForm)

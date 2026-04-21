@@ -71,7 +71,7 @@ namespace RetroGameFramework
 
         // Called once per frame.
         // Here the actual logic happens.
-        protected override void OnLoopGame()
+        protected override void OnLoopGame(float deltaTime)
         {
             UpdateBallPosition();
         }
