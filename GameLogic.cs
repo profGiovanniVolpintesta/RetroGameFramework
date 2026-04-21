@@ -21,8 +21,8 @@ namespace RetroGameFramework
         {
             GameConfig.Title = "Retro Game";
 
-            GameConfig.PixelsMatrixWidth = 65;
-            GameConfig.PixelsMatrixHeight = 47;
+            GameConfig.PixelsMatrixWidth = 64;
+            GameConfig.PixelsMatrixHeight = 48;
             GameConfig.PixelSize = 8;
 
             GameConfig.FrameRate = 4;
@@ -40,7 +40,7 @@ namespace RetroGameFramework
             // set the ball in the center of the screen
             ballPosition = new float[] { pixels.GetLength(0) / 2, pixels.GetLength(1) / 2 };
             // give the fall a speed
-            ballSpeed = new float[] { 1, 1 };
+            ballSpeed = new float[] { 2, 2 };
         }
 
         // Called once per frame.
@@ -72,31 +72,31 @@ namespace RetroGameFramework
             // Check hits with screen bounds to make the ball bounce
             // The bounce is cheched with a margin to consider the ball dimension
 
-            int ballMargin = 1;
+            float ballRadius = 1;
 
-            if (ballSpeed[0] < 0 && ballPosition[0] - ballMargin <= 0) // horizontal check to the left
+            if (ballSpeed[0] < 0 && ballPosition[0] - ballRadius <= 0) // horizontal check to the left
             {
                 // if the ball is going to the left and it went outside the left screen bound,
-                ballPosition[0] += ballMargin - ballPosition[0]; // correct the position after the bounce
+                ballPosition[0] += ballRadius - ballPosition[0]; // correct the position after the bounce
                 ballSpeed[0] *= -1; // flip the speed direction
             }
-            else if (ballSpeed[0] > 0 && ballPosition[0] + ballMargin >= pixels.GetLength(0) - 1) // horizontal check to the right
+            else if (ballSpeed[0] > 0 && ballPosition[0] + ballRadius >= pixels.GetLength(0) - 1) // horizontal check to the right
             {
                 // if the ball is going to the right and it went outside the right screen bound,
-                ballPosition[0] -= ballPosition[0] - (pixels.GetLength(0) - 1 - ballMargin); // correct the position after the bounce
+                ballPosition[0] -= ballPosition[0] - (pixels.GetLength(0) - 1 - ballRadius); // correct the position after the bounce
                 ballSpeed[0] *= -1; // flip the speed direction
             }
 
-            if (ballSpeed[1] < 0 && ballPosition[1] - ballMargin <= 0) // vertical check to the top
+            if (ballSpeed[1] < 0 && ballPosition[1] - ballRadius <= 0) // vertical check to the top
             {
                 // if the ball is going up and it went outside the top screen bound,
-                ballPosition[1] += ballMargin - ballPosition[1]; // correct the position after the bounce
+                ballPosition[1] += ballRadius - ballPosition[1]; // correct the position after the bounce
                 ballSpeed[1] *= -1; // flip the speed direction
             }
-            else if (ballSpeed[1] > 0 && ballPosition[1] + ballMargin >= pixels.GetLength(1) - 1) // vertical check to the bottom
+            else if (ballSpeed[1] > 0 && ballPosition[1] + ballRadius >= pixels.GetLength(1) - 1) // vertical check to the bottom
             {
                 // if the ball is going down and it went outside the bottom screen bound,
-                ballPosition[1] -= ballPosition[1] - (pixels.GetLength(1) - 1 - ballMargin); // correct the position after the bounce
+                ballPosition[1] -= ballPosition[1] - (pixels.GetLength(1) - 1 - ballRadius); // correct the position after the bounce
                 ballSpeed[1] *= -1; // flip the speed direction
             }
         }
@@ -116,8 +116,8 @@ namespace RetroGameFramework
 
         private void DrawPixel(int[,] pixels, float x, float y, int color)
         {
-            int posX = (int)Math.Round(x);
-            int posY = (int)Math.Round(y);
+            int posX = (int)x;
+            int posY = (int)y;
             if (posX >= 0 && posX < pixels.GetLength(0)
                 && posY >= 0 && posY < pixels.GetLength(1))
             {
