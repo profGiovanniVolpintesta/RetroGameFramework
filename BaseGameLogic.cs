@@ -6,6 +6,23 @@ using System.Windows.Input;
 
 namespace RetroGameFramework
 {
+
+    /*
+    
+    TODO: Documentazione
+    TODO: elapsedTime, deltaTime (in BaseGameLogic)
+    TODO: random generator (in GameUtils)
+    TODO: print di una immagine (matrice) 
+    TODO: testi
+    TODO: aminations (serie di matrici, lancio animazione, loop)
+
+    TODO: GameUtils (Vector2, Rect)
+    TODO: Refractoring delle collisioni, implementazione BoxCollision e CircleCollision
+    TODO: testi animati?
+    TODO: promitive? Per esempio per i tasti del menu?
+    TODO: fasi del gioco: menu, gioco, menu pausa, endgame
+     
+     */
     internal class BaseGameLogic
     {
         private static GameConfig _gameConfig;
