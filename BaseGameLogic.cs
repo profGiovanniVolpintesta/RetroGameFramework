@@ -7,10 +7,11 @@ namespace RetroGameFramework
 
     /*
     
+    TODO: refractor namespace and files
+    TODO: import image from PNG
     TODO: testi
     TODO: aminations (serie di matrici, lancio animazione, loop)
 
-    TODO: GameUtils (Vector2, Rect)
     TODO: Refractoring delle collisioni, implementazione BoxCollision e CircleCollision
     TODO: testi animati?
     TODO: promitive? Per esempio per i tasti del menu?
