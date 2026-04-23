@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace RetroGameFramework
 {
@@ -13,8 +14,8 @@ namespace RetroGameFramework
 
         // GAME DATA
         // Declare here game-specific data that should survive the frame
-        float[] ballPosition; // ball position in screen pixels
-        float[] ballSpeed; // ball speed in pixels per frame
+        float[] ballPosition; // ball position in screen pixels (float to consider also half pixels)
+        float[] ballSpeed; // ball speed in pixels per frame (float to consider also half pixels)
 
         int ballColor = 1;
 
@@ -135,24 +136,27 @@ namespace RetroGameFramework
 
         private void DrawBall(int[,] pixels, int color)
         {
-            // BALL EXAMPLE:     2
-            //                  415
-            //                   3
+            // BALL EXAMPLE:     1  
+            //                  234 
+            //                  65  
 
-            DrawPixel(pixels, ballPosition[0],      ballPosition[1],        color);  // 1
-            DrawPixel(pixels, ballPosition[0] - 1,  ballPosition[1],        color);  // 2
-            DrawPixel(pixels, ballPosition[0] + 1,  ballPosition[1],        color);  // 3
-            DrawPixel(pixels, ballPosition[0],      ballPosition[1] - 1,    color);  // 4
-            DrawPixel(pixels, ballPosition[0],      ballPosition[1] + 1,    color);  // 5
+            DrawPixel(pixels, ballPosition[0] - 1,  ballPosition[1],        color);  // 1
+            DrawPixel(pixels, ballPosition[0],      ballPosition[1] - 1,    color);  // 2
+            DrawPixel(pixels, ballPosition[0],      ballPosition[1],        color);  // 3
+            DrawPixel(pixels, ballPosition[0],      ballPosition[1] + 1,    color);  // 4
+            DrawPixel(pixels, ballPosition[0] + 1,  ballPosition[1],        color);  // 5
+            DrawPixel(pixels, ballPosition[0] - 1,  ballPosition[1] + 1,    color);  // 6
         }
 
-        private void DrawPixel(int[,] pixels, float x, float y, int color)
+        private static void DrawPixel(int[,] pixels, float x, float y, int color)
         {
             int posX = (int)x;
             int posY = (int)y;
+
             if (posX >= 0 && posX < pixels.GetLength(0)
                 && posY >= 0 && posY < pixels.GetLength(1))
             {
+                // X coordinate is the column index, while Y coordinate is the row index
                 pixels[posX, posY] = color;
             }
         }
@@ -186,7 +190,8 @@ namespace RetroGameFramework
                 else if (KeyCode == Keys.C)
                 {
                     ballColor++;
-                    if (ballColor >= GameConfig.AdditionalColors.Length + 2) ballColor = 2;
+                    if (ballColor >= GameConfig.AdditionalColors.Length + 2)
+                        ballColor = 2;
                 }
             }
             else

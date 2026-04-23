@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static RetroGameFramework.GameForm;
 
 namespace RetroGameFramework
 {
@@ -141,11 +140,13 @@ namespace RetroGameFramework
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            
+
             for (int x = 0; x < Matrix.GetLength(0); x++)
             {
                 for (int y = 0; y < Matrix.GetLength(1); y++)
                 {
+                    // The matrix is transposed, so the X screen coordinate is aligned to the matrix row index,
+                    // and the Y screen coordinate is aligned to the matrix column index
                     e.Graphics.FillRectangle(GetBrush(Matrix[x, y]), x * PixelSize, y * PixelSize, PixelSize, PixelSize);
                 }
             }            

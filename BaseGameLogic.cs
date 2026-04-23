@@ -62,6 +62,9 @@ namespace RetroGameFramework
             GameConfig GameConfig = new GameConfig();
             BaseGameLogic GameLogic = new GameLogic(GameConfig);
             GameLogic.InitGameConfig(GameConfig);
+
+            // The screen matrix is transposed, so the number of rows is equal to the width of the screen
+            // and the number of columns is equal to the height of the screen (considering a pixel size of 1)
             int[,] PixelsMatrix = new int[GameConfig.PixelsMatrixWidth, GameConfig.PixelsMatrixHeight];
 
             Application.EnableVisualStyles();
