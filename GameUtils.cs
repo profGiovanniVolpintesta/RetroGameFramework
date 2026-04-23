@@ -11,14 +11,14 @@ namespace RetroGameFramework
         Center
     }
 
+    public enum MatrixOrientation
+    {
+        Transposed = 0, // default
+        AlignedToScreen
+    }
+
     public struct GameImage
     {
-        public enum MatrixOrientation
-        {
-            Transposed = 0, // default
-            AlignedToScreen
-        }
-
         public static int WidthFromMatrix(int[,] matrix, MatrixOrientation matrixOrientation) { return matrix.GetLength(matrixOrientation == MatrixOrientation.AlignedToScreen ? 1 : 0); } // If the matrix is aligned to the screen, the image width is the number of columns
         public static int HeightFromMatrix(int[,] matrix, MatrixOrientation matrixOrientation) { return matrix.GetLength(matrixOrientation == MatrixOrientation.AlignedToScreen ? 0 : 1); } // If the matrix is aligned to the screen, the image height is the number of rows
         public static Size SizeFromMatrix(int[,] matrix, MatrixOrientation matrixOrientation) { return new Size(WidthFromMatrix(matrix, matrixOrientation), HeightFromMatrix(matrix, matrixOrientation)); }
