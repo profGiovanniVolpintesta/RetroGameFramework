@@ -53,6 +53,7 @@ namespace RetroGameFramework
         public float ElapsedTimePaused { get { return _elapsedTime - _elapsedTimeRunning; } }
 
         private Random _randomGenerator;
+        public Random RandomGenerator { get { return _randomGenerator; } }
 
         // CREATE GAME MATRIX
         static void Main(string[] args)
