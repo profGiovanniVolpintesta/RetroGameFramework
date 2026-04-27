@@ -28,7 +28,6 @@ namespace RetroGameFramework
 
     /*
     
-    TODO: refractor namespace and files
     TODO: import image from PNG
     TODO: testi
     TODO: aminations (serie di matrici, lancio animazione, loop)
@@ -39,7 +38,7 @@ namespace RetroGameFramework
     TODO: fasi del gioco: menu, gioco, menu pausa, endgame
      
      */
-    internal class BaseGameLogic
+    internal class GameLogic
     {
         private static GameConfig _gameConfig;
         public static GameConfig GameConfig { get { return _gameConfig; } }
@@ -80,7 +79,7 @@ namespace RetroGameFramework
         static void Main(string[] args)
         {
             GameConfig GameConfig = new GameConfig();
-            BaseGameLogic GameLogic = new RetroGameDemo.MyRetroGame(GameConfig);
+            GameLogic GameLogic = new RetroGameDemo.MyRetroGame(GameConfig);
             GameLogic.InitGameConfig(GameConfig);
 
             // The screen matrix is transposed, so the number of rows is equal to the width of the screen
@@ -152,7 +151,7 @@ namespace RetroGameFramework
             Application.Run(gameForm); // This runs the form with the main thread as owner
         }
 
-        public BaseGameLogic(GameConfig GameConfig)
+        public GameLogic(GameConfig GameConfig)
         {
             _gameConfig = GameConfig;
             _pressedKeys = new List<Keys>();

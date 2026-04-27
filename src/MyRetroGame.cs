@@ -26,7 +26,7 @@ using RetroGameFramework;
 
 namespace RetroGameDemo
 {
-    internal class MyRetroGame : BaseGameLogic
+    internal class MyRetroGame : GameLogic
     {
         public MyRetroGame(GameConfig GameConfig) : base(GameConfig) { }
 
