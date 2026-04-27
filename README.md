@@ -109,6 +109,80 @@ The `GameLogic` class provides the reference of a random generator of the [Syste
 
 ## The GameUtils class
 
-The GameUtils class is a static class containing some helper functions that can be called as `GameUtils.function()` in any game event function. This functions, sometime use other types defined for the helper functions, whose details will be provided later in this documentation.
+The GameUtils class is a [static](https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/static) class containing some helper functions that can be called as `GameUtils.function()` in any game event function. This functions, sometime use other types defined for the helper functions, whose details will be provided later in this documentation.
 
-### Image handling
+### Image drawing
+Image handling is implemeted by the following [static](https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/static) functions defined in the `GameUtils` class the types `GameImage`, and `PaintStyle` (see the specific section).
+- `static void ClearScreen (int[,] targetPixelsMatrix)`: clears the image matrix passed as argument, setting `0` (the index of the background color) in all pixels.
+- `static void DrawImageOnScreen(int[,] targetMatrix, GameImage image, Point position, PaintStyle paintStyle)`: draws the `image` matrix on top of the screen matrix passed as `targetMatrix`, painting the `image` origin (see `GameImage.Pivot`) at `position` coordinates in the screen matrix. The screen matrix is modified. The `paintStyle` argument contains a number of painting configurations (see `PaintStyle`). The `position` is specified as a [System.Drawing.Point](http://learn.microsoft.com/dotnet/api/system.drawing.point) value.
+- `static void DrawImageOnScreen(int[,] targetMatrix, GameImage image, Point position)`: as above, but with default `PaintStyle`.
+- `static void DrawImageOnTopOfTarget(int[,] targetMatrix, GameImage image, Point position, PaintStyle paintStyle, MatrixOrientation targetMatrixOrientation)`: as `DrawImageOnScreen`, but with the possibility to specify a target matrix that is not strictly a screen matrix (so it could also be another image, to compose images on top of each other). The `targetMatrixOrientation` arguments specifies whether the `targetMatrix` matrix is transposed (`Transposed`) or not (`AlignedToScreen`). This parameter is important to let the engine paint the images with a correct orientation (See documentation about *The pixels matrix* and `Image`).
+- `static void DrawImageOnTopOfTarget(int[,] targetMatrix, GameImage image, Point position, MatrixOrientation targetMatrixOrientation)`: as above, but with default `PaintStyle`.
+
+### Other helper functions
+- `static System.Drawing.Point PivotFromAnchorType(System.Drawing.Size imageSize, AnchorType pivotPosition)`: returns (as a value of type [System.Drawing.Point](http://learn.microsoft.com/dotnet/api/system.drawing.point)) the pivot position inside the given `imageSize` (see [System.Drawing.Size](http://learn.microsoft.com/dotnet/api/system.drawing.size)), corresponding to the given `pivotPosition` (see documentation of `AnchorType`).   
+
+## Helper types
+
+These types have been defined to help the writing of code, mainly using [enums](https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/enum) and [structs](https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/struct). *Structs*, like *classes*, are complex types containing *fields*, *properties* and *methods* but, unlike classes, are [value types](https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/value-types), like `int`. In this framework, structs have been choosen over classes because this framework (and this documentation) is wrote to be used by programmers with a knowledge of just *procedural programming*, not *Object Oriented Programming*.
+
+### `MatrixOrientation`
+
+It's an enum used to specify, the orientation of a pixel matrix. Its values can be `Transposed` or `AlignedToScreen`. The default value is `Transposed` because the screen matrix is transposed in memory (see documentation of *The pixels matrix*), but the value used as default by functions parameters is `AlignedToScreen` because it's more friendly for the user to write a matrix as it's visualized on screen.
+
+### `AnchorType`
+
+It's an enum used to specify a standard anchor point inside an image. It's mainly used at image creation time to setup a standard pivot. Its values are `TopLeft`, `BottomLeft`, `Center`. Notice that, even if the anchor types changes the anchor point position, but does not flip the coordinate system axis (e.g.: while using `BottomLeft` the Y axis still points down).
+
+### `GameImage`
+
+A `GameImage` struct contains an image matrix and an origin pixel inside the image, called ***pivot***, that will be the center of application of any transform (positioning, rotation, etc.) of the image. The following fields, methods and properties are available in the code using a `GameImage` struct.
+
+#### Properties
+
+- `int Width`: read-only property returning the width of the image.
+- `int Height`: read-only property returning the width of the image.
+- `System.Drawing.Size Size`: read-only property returning the size (width and height of the image) as a [System.Drawing.Size](http://learn.microsoft.com/dotnet/api/system.drawing.size) value.
+- `System.Drawing.Point Pivot`: read-only property returning the *pivot* of the image as a [System.Drawing.Point](http://learn.microsoft.com/dotnet/api/system.drawing.point) value.
+
+
+#### Methods
+
+- `int GetPixel(int xCoord, int yCoord)`: returns the color of the pixel at the coordinates passed as argument. This method will always consider the top-left angle of the image as origin, whatever the *pivot* is.
+- `int[,] GetMatrixCopy(MatrixOrientation desiredMatrixOrientation = MatrixOrientation.AlignedToScreen)`: returns a **copy** (not a *reference*) of the image matrix, oriented as requested. Default orientation is `AlignedToScreen` (it's user-friendlier to hide the implementation details about the transposition of the matrix).
+- `static int WidthFromMatrix(int[,] matrix, MatrixOrientation matrixOrientation)`: [static](https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/static) method computing the width of a pixel matrix.
+- `static int HeightFromMatrix(int[,] matrix, MatrixOrientation matrixOrientation)`: [static](https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/static) method computing the height of a pixel matrix.
+- `static System.Drawing.Size SizeFromMatrix(int[,] matrix, MatrixOrientation matrixOrientation)`: [static](https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/static) method computing the size of a pixel matrix, which is returned as a [System.Drawing.Size](http://learn.microsoft.com/dotnet/api/system.drawing.size) value.
+
+#### Constructors
+
+- `GameImage(int[,] matrix, Point pivot, MatrixOrientation matrixOrientation = MatrixOrientation.AlignedToScreen)`: creates an image with the `matrix` and the `pivot` passed as argument. The internal matrix is created as new and its values are copied from the argument, so edits to the matrix passed as argument will not produce an edit to the image internal matrix, as the memory is not shared. The `matrixOrientation` value is used to specify whether the `matrix` is transposed (`Transposed`) or not (`AlignedToScreen`), with default to `AlignedToScreen` for ease of use.
+- `GameImage(int[,] matrix, AnchorType pivotPosition, MatrixOrientation matrixOrientation = MatrixOrientation.AlignedToScreen`: as above, but the *pivot* position is computed using the image size and a standard position type defined in the `AnchorType` enum.
+- `GameImage(int[,] matrix, MatrixOrientation matrixOrientation = MatrixOrientation.AlignedToScreen)`: as above, but a pivot position in the top-left angle.
+
+
+### `PaintStyle`
+
+Struct used to specify paint parameters (mainly to the drawing functions of `GameUtils`). It contains two informations, one specifing whether the background color is to be considered transparent or not, and another containing a color remap array. The color remapping is useful when the user wants to paint multiple times (with different colors) the same image. In this case the image will use some colors to divide the image in different parts, then the draw call will specify a `PaintStyle` parameter containing color remaps for each image part. By design, the maximum number of colors is 256.
+
+#### Constants
+These [static](https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/static) values are constant and cannot be edited.
+- `int BACKGROUND_COLOR_INDEX = 0`: the background color.
+- `int FOREGROUND_COLOR_INDEX = 1`: the foreground color.
+
+#### Properties
+
+- `bool transparentBackground`: whether the background is to be considered transparent during this draw call (`true`) or it should be drawn to the target matrix (`false`).
+
+#### Methods
+- `int[] getColorsRemapCopy()`: returns a **copy** of the colors remap array. As the returned array is a copy, edits to the returned array will not be applied to the original colors remap array. This array indexed by the color to remap from, and the retrieved value (if any) represents the color to remap to.
+- `bool ExistsColorRemap (int color)`: returns whether `color` is remapped or not.
+- `int GetRemappedColor (int fromColor`: returns the color `fromColor` is remapped to.
+- `void SetColorRemap (int fromColor, int toColor)`: adds a remapping from `fromColor` to `toColor` to this style. This method edits the remaps array and reallocates it if necessary.
+- `void EnsureColorRemapSize(int colorsCount)`: ensures the internal colors remap array is big enough to contain the number of colors passed as argument. If necessary, it reallocates the array.
+
+#### Constructors
+- `PaintStyle(bool transparentBackground, int[] colorsRemap)`: initializes the new `PaintStyle` object with values setting the `transparentBackground` property and the colors remap array. The internal colors remap array is created as new and its elements are copied from the `colorsRemap` argument. So, the memory is not shared between the two arrays, and edits to the array passed as argument are not applied to the internal array too.
+- `PaintStyle(bool transparentBackground)`: as the main constructor, without color remap.
+- `PaintStyle(int[] colorsRemap)`: as the main constructor, with a transparent background.
+- `static PaintStyle Default`: [static](https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/static) property returning a new `PaintStyle` value with default values (transparent background and no color remap)
