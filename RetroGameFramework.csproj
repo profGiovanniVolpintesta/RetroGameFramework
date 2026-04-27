@@ -62,5 +62,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="resources\images\empty.txtimg" />
+    <EmbeddedResource Include="resources\images\hearth.txtimg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

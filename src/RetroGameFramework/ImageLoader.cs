@@ -1,9 +1,28 @@
-﻿using System;
+﻿/*
+    Framework to write a simple retro game in pixel art.
+    Copyright (C) 2026  Giovanni Volpintesta
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+    Contact the author to: john.foxinhead@gmail.com
+
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
-using static System.Windows.Forms.LinkLabel;
-using System.Windows.Media.Media3D;
-using System.Linq;
+using System.Reflection;
 
 namespace RetroGameFramework.src.RetroGameFramework
 {
@@ -29,6 +48,52 @@ namespace RetroGameFramework.src.RetroGameFramework
             string[] lines = imageString.Split(new char[] { '\n' }, StringSplitOptions.None); // split by '\n' keeping empty lines
 
             return ReadTextImageFromRows(lines, colorChars, matrixOrientation);
+        }
+
+        public static int[,] ReadTextImageFromResource(string resourceName, MatrixOrientation matrixOrientation = MatrixOrientation.AlignedToScreen)
+        {
+            List<string> lines = new List<string>();
+            char[] colorChars = DEFAULT_CHARS;
+
+            Assembly assembly = Assembly.GetExecutingAssembly();
+
+            //foreach (string s in assembly.GetManifestResourceNames())
+            //    Console.WriteLine(s);
+
+            if (assembly != null)
+            {
+                string resourceFullPath = "RetroGameFramework.resources.images." + resourceName + ".txtimg";
+                using (Stream stream = assembly.GetManifestResourceStream(resourceFullPath))
+                {
+                    if (stream == null)
+                    {
+                        throw new FileNotFoundException($"\"{resourceFullPath}\" resource not found!");
+                    }
+
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        if (reader != null)
+                        {
+                            string line;
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                if (!string.IsNullOrEmpty(line))
+                                {
+                                    if (line.StartsWith(CHARS_LINE_BEGIN))
+                                    {
+                                        line = line.Substring(CHARS_LINE_BEGIN.Length);
+                                        colorChars = line.ToCharArray();
+                                        continue;
+                                    }
+                                }
+                                lines.Add(line);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ReadTextImageFromRows(lines.ToArray(), colorChars, matrixOrientation);
         }
 
         public static int[,] ReadTextImageFromFile(string filename, MatrixOrientation matrixOrientation = MatrixOrientation.AlignedToScreen)

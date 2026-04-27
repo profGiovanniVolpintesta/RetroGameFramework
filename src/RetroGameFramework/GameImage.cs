@@ -190,5 +190,27 @@ namespace RetroGameFramework
             return CreateFromFile(filename, DEFAULT_ANCHOR_TYPE);
         }
 
+
+
+        public static GameImage CreateFromResource(string resourceName, Point pivot)
+        {
+            GameImage tmp = new GameImage();
+            tmp._matrix = ImageLoader.ReadTextImageFromResource(resourceName, MatrixOrientation.Transposed);
+            tmp._pivot = pivot;
+            return tmp;
+        }
+
+        public static GameImage CreateFromResource(string resourceName, AnchorType pivotPosition)
+        {
+            GameImage tmp = new GameImage();
+            tmp._matrix = ImageLoader.ReadTextImageFromResource(resourceName, MatrixOrientation.Transposed);
+            tmp._pivot = GameUtils.PivotFromAnchorType(SizeFromMatrix(tmp._matrix, MatrixOrientation.Transposed), pivotPosition);
+            return tmp;
+        }
+
+        public static GameImage CreateFromResource(string resourceName)
+        {
+            return CreateFromResource(resourceName, DEFAULT_ANCHOR_TYPE);
+        }
     }
 }

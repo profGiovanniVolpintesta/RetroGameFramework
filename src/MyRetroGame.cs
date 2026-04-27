@@ -87,6 +87,8 @@ namespace RetroGameDemo
         new char[] { ' ', '*', '$', '.' }, AnchorType.Center);
         PaintStyle squareStyle2 = PaintStyle.Default;
 
+        GameImage hearthImage = GameImage.CreateFromResource("hearth", AnchorType.Center);
+        PaintStyle hearthStyle = PaintStyle.Default;
 
         // Initialization call, used to customize GameConfig data (used to customize the engine behaviour)
         protected override void OnInitGameConfig(GameConfig GameConfig)
@@ -131,6 +133,9 @@ namespace RetroGameDemo
             squareStyle2.SetColorRemap(1, 4);
             squareStyle2.SetColorRemap(2, 5);
             squareStyle2.SetColorRemap(3, 6);
+
+            hearthStyle.SetColorRemap(1, 2);
+            hearthStyle.SetColorRemap(2, 8);
         }
 
         // Called once per frame, BEFORE the OnLoopGame event.
@@ -161,11 +166,12 @@ namespace RetroGameDemo
 
             // Draw the background star images at the center of the screen
             GameUtils.DrawImageOnScreen(pixels, starImage, new Point((int)(screenWidth * 0.25), (int)(screenHeight * 0.25)), starStyle);
-            GameUtils.DrawImageOnScreen(pixels, starImage, new Point((int)(screenWidth * 0.50), (int)(screenHeight * 0.50)), starStyle);
             GameUtils.DrawImageOnScreen(pixels, starImage, new Point((int)(screenWidth * 0.25), (int)(screenHeight * 0.75)), starStyle);
 
             GameUtils.DrawImageOnScreen(pixels, squareImage, new Point((int)(screenWidth * 0.75), (int)(screenHeight * 0.25)), squareStyle1);
             GameUtils.DrawImageOnScreen(pixels, squareImage2, new Point((int)(screenWidth * 0.75), (int)(screenHeight * 0.75)), squareStyle2);
+
+            GameUtils.DrawImageOnScreen(pixels, hearthImage, new Point((int)(screenWidth * 0.50), (int)(screenHeight * 0.50)), hearthStyle);
 
             DrawBall(pixels, ballColor); // set the foregorund color in the current ball location
             // GameUtils.DrawImageOnScreen(pixels, ballImage, new Point((int)ballPosition[0], (int)ballPosition[1]), ballStyle);
