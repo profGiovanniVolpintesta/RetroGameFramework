@@ -55,6 +55,7 @@
     <Compile Include="src\RetroGameFramework\GameImage.cs" />
     <Compile Include="src\MyRetroGame.cs" />
     <Compile Include="src\RetroGameFramework\GameUtils.cs" />
+    <Compile Include="src\RetroGameFramework\ImageLoader.cs" />
     <Compile Include="src\RetroGameFramework\PaintStyle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

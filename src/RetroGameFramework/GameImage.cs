@@ -19,6 +19,7 @@
 
  */
 
+using RetroGameFramework.src.RetroGameFramework;
 using System;
 using System.Drawing;
 
@@ -26,6 +27,8 @@ namespace RetroGameFramework
 {
     public struct GameImage
     {
+        private static readonly AnchorType DEFAULT_ANCHOR_TYPE = AnchorType.TopLeft;
+
         public static int WidthFromMatrix(int[,] matrix, MatrixOrientation matrixOrientation) { return matrix.GetLength(matrixOrientation == MatrixOrientation.AlignedToScreen ? 1 : 0); } // If the matrix is aligned to the screen, the image width is the number of columns
         public static int HeightFromMatrix(int[,] matrix, MatrixOrientation matrixOrientation) { return matrix.GetLength(matrixOrientation == MatrixOrientation.AlignedToScreen ? 0 : 1); } // If the matrix is aligned to the screen, the image height is the number of rows
         public static Size SizeFromMatrix(int[,] matrix, MatrixOrientation matrixOrientation) { return new Size(WidthFromMatrix(matrix, matrixOrientation), HeightFromMatrix(matrix, matrixOrientation)); }
@@ -108,9 +111,84 @@ namespace RetroGameFramework
 
         public GameImage(int[,] matrix, MatrixOrientation matrixOrientation = MatrixOrientation.AlignedToScreen)
             : this(matrix
-                  , AnchorType.TopLeft
+                  , DEFAULT_ANCHOR_TYPE
                   , matrixOrientation)
         { }
+
+
+
+        public static GameImage CreateFromRows(string[] rows, Point pivot) { return CreateFromRows(rows, null, pivot); }
+        public static GameImage CreateFromRows(string[] rows, char[] colorChars, Point pivot)
+        {
+            GameImage tmp = new GameImage();
+            tmp._matrix = ImageLoader.ReadTextImageFromRows(rows, colorChars, MatrixOrientation.Transposed);
+            tmp._pivot = pivot;
+            return tmp;
+        }
+
+        public static GameImage CreateFromRows(string[] rows, AnchorType pivotPosition) { return CreateFromRows(rows, null, pivotPosition); }
+        public static GameImage CreateFromRows(string[] rows, char[] colorChars, AnchorType pivotPosition)
+        {
+            GameImage tmp = new GameImage();
+            tmp._matrix = ImageLoader.ReadTextImageFromRows(rows, colorChars, MatrixOrientation.Transposed);
+            tmp._pivot = GameUtils.PivotFromAnchorType(SizeFromMatrix(tmp._matrix, MatrixOrientation.Transposed), pivotPosition);
+            return tmp;
+        }
+
+        public static GameImage CreateFromRows(string[] rows) { return CreateFromRows(rows, null); }
+        public static GameImage CreateFromRows(string[] rows, char[] colorChars)
+        {
+            return CreateFromRows(rows, colorChars, DEFAULT_ANCHOR_TYPE);
+        }
+
+
+
+        public static GameImage CreateFromString(string imageString, Point pivot) { return CreateFromString(imageString, null, pivot); }
+        public static GameImage CreateFromString(string imageString, char[] colorChars, Point pivot)
+        {
+            GameImage tmp = new GameImage();
+            tmp._matrix = ImageLoader.ReadTextImageFromString(imageString, colorChars, MatrixOrientation.Transposed);
+            tmp._pivot = pivot;
+            return tmp;
+        }
+
+        public static GameImage CreateFromString(string imageString, AnchorType pivotPosition) { return CreateFromString(imageString, null, pivotPosition); }
+        public static GameImage CreateFromString(string imageString, char[] colorChars, AnchorType pivotPosition)
+        {
+            GameImage tmp = new GameImage();
+            tmp._matrix = ImageLoader.ReadTextImageFromString(imageString, colorChars, MatrixOrientation.Transposed);
+            tmp._pivot = GameUtils.PivotFromAnchorType(SizeFromMatrix(tmp._matrix, MatrixOrientation.Transposed), pivotPosition);
+            return tmp;
+        }
+
+        public static GameImage CreateFromString(string imageString) { return CreateFromString(imageString, null); }
+        public static GameImage CreateFromString(string imageString, char[] colorChars)
+        {
+            return CreateFromString(imageString, colorChars, DEFAULT_ANCHOR_TYPE);
+        }
+
+
+
+        public static GameImage CreateFromFile(string filename, Point pivot)
+        {
+            GameImage tmp = new GameImage();
+            tmp._matrix = ImageLoader.ReadTextImageFromFile(filename, MatrixOrientation.Transposed);
+            tmp._pivot = pivot;
+            return tmp;
+        }
+
+        public static GameImage CreateFromFile(string filename, AnchorType pivotPosition)
+        {
+            GameImage tmp = new GameImage();
+            tmp._matrix = ImageLoader.ReadTextImageFromFile(filename, MatrixOrientation.Transposed);
+            tmp._pivot = GameUtils.PivotFromAnchorType(SizeFromMatrix(tmp._matrix, MatrixOrientation.Transposed), pivotPosition);
+            return tmp;
+        }
+
+        public static GameImage CreateFromFile(string filename)
+        {
+            return CreateFromFile(filename, DEFAULT_ANCHOR_TYPE);
+        }
 
     }
 }
