@@ -6,8 +6,14 @@ namespace RetroGameFramework
     
     public enum AnchorType
     {
-        TopLeft,
+        TopLeft = 0,
         BottomLeft,
+        TopRight,
+        BottomRight,
+        Left,
+        Top,
+        Bottom,
+        Right,
         Center
     }
 
@@ -116,7 +122,15 @@ namespace RetroGameFramework
         public bool transparentBackground { get { return _transparentBackground; } set { _transparentBackground = value; } }
 
         private int[] _colorsRemap;
-        public int[] colorsRemap { get { return _colorsRemap; } }
+        public int[] getColorsRemapCopy()
+        {
+            int[] tmp = new int[_colorsRemap != null ? _colorsRemap.Length : 0];
+            for (int i = 0; i < tmp.Length; i++)
+            {
+                tmp[i] = _colorsRemap[i];
+            }
+            return tmp;
+        }
 
         public PaintStyle(bool transparentBackground, int[] colorsRemap)
         {
@@ -143,29 +157,29 @@ namespace RetroGameFramework
 
         public bool ExistsColorRemap (int color)
         {
-            return colorsRemap != null && color >= 0 && color < colorsRemap.Length && colorsRemap[color] != color;
+            return _colorsRemap != null && color >= 0 && color < _colorsRemap.Length && _colorsRemap[color] != color;
         }
 
         // Retrieves the remapped color, or the original one if it has been remapped
         public int GetRemappedColor (int fromColor)
         {
-            return (colorsRemap != null && fromColor >= 0 && fromColor < colorsRemap.Length) ? colorsRemap[fromColor]
+            return (_colorsRemap != null && fromColor >= 0 && fromColor < _colorsRemap.Length) ? _colorsRemap[fromColor]
                 : ((fromColor == 0 || fromColor == 1) ? fromColor : - 1);
         }
 
         public void EnsureColorRemapSize(int colorsCount)
         {
-            if (colorsRemap == null || colorsRemap.Length < colorsCount)
+            if (_colorsRemap == null || _colorsRemap.Length < colorsCount)
             {
                 if (colorsCount > 255) throw new IndexOutOfRangeException("Cannot remap more than 256 colors");
 
-                int[] oldColors = colorsRemap;
+                int[] oldColors = _colorsRemap;
                 _colorsRemap = new int[colorsCount];
                 if (oldColors != null)
                 {
-                    for (int i = 0; i < oldColors.Length; i++) colorsRemap[i] = oldColors[i];
+                    for (int i = 0; i < oldColors.Length; i++) _colorsRemap[i] = oldColors[i];
                 }
-                for (int i = (oldColors != null) ? oldColors.Length : 0; i < colorsRemap.Length; i++) colorsRemap[i] = i;
+                for (int i = (oldColors != null) ? oldColors.Length : 0; i < _colorsRemap.Length; i++) _colorsRemap[i] = i;
             }
         }
 
@@ -175,10 +189,10 @@ namespace RetroGameFramework
 
             // if EnsureColorRemapSize method has not been called in advance,
             // a bigger space is allocated to prevent memory allocation ad each call
-            if (colorsRemap == null || colorsRemap.Length < fromColor)
+            if (_colorsRemap == null || _colorsRemap.Length < fromColor)
                 EnsureColorRemapSize(fromColor * 2 + 1);
 
-            colorsRemap[fromColor] = toColor;
+            _colorsRemap[fromColor] = toColor;
         }
     }
 
@@ -190,6 +204,12 @@ namespace RetroGameFramework
             {
                 case AnchorType.TopLeft: return new Point(0, 0);
                 case AnchorType.BottomLeft: return new Point(0, imageSize.Height);
+                case AnchorType.TopRight: return new Point(imageSize.Width, 0);
+                case AnchorType.BottomRight: return new Point(imageSize.Width, imageSize.Height);
+                case AnchorType.Top: return new Point(imageSize.Width / 2, 0);
+                case AnchorType.Bottom: return new Point(imageSize.Width / 2, imageSize.Height);
+                case AnchorType.Left: return new Point(0, imageSize.Height / 2);
+                case AnchorType.Right: return new Point(imageSize.Width, imageSize.Height / 2);
                 case AnchorType.Center: return new Point(imageSize.Width / 2, imageSize.Height / 2);
                 default: return new Point(0, 0);
             }
