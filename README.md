@@ -48,8 +48,18 @@ The matrix elements are the pixel colors, each identified by its index in the co
 
 # Framework API
 
+## Code organization
+
+### The `RetroGameFramework` namespace
+The `RetroGameFramework` namespace contains all the framework code. 
+
+### The `MyRetroGame` class and the `RetroGameDemo` namespace
+The `RetroGameDemo.MyRetroGame` subclass exists to implement the custom game code. It can be used to read `GameConfig` data and to write the game events code. It is a subclass of the `GameLogic` class, the class where the framework-level code of the game has already been implemented. In this class the programmer can write their own game code.
+
+The `RetroGameDemo` namespace should be used to contain the new types defined by the user to contain the game code.
+
 ## The `GameLogic` class
-The `GameLogic` subclass exists to implement the custom game code. It can be used to read `GameConfig` data and to write the game events code.
+This is the superclass of the `RetroGameDemo.MyRetroGame` class. Everything that is written here is accessible in the body of the `RetroGameDemo.MyRetroGame` class.
 
 ### The game execution variables
 Directly outside the functions code, as instance fields, necessary variables to store the game execution data can be declared.
