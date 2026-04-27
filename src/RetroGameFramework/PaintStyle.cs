@@ -99,7 +99,7 @@ namespace RetroGameFramework
 
             // if EnsureColorRemapSize method has not been called in advance,
             // a bigger space is allocated to prevent memory allocation ad each call
-            if (_colorsRemap == null || _colorsRemap.Length < fromColor)
+            if (_colorsRemap == null || _colorsRemap.Length <= fromColor)
                 EnsureColorRemapSize(fromColor * 2 + 1);
 
             _colorsRemap[fromColor] = toColor;
