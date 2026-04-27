@@ -51,7 +51,7 @@
     <Compile Include="src\RetroGameFramework\GameForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\RetroGameFramework\BaseGameLogic.cs" />
+    <Compile Include="src\RetroGameFramework\GameLogic.cs" />
     <Compile Include="src\RetroGameFramework\GameImage.cs" />
     <Compile Include="src\MyRetroGame.cs" />
     <Compile Include="src\RetroGameFramework\GameUtils.cs" />
