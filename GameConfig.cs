@@ -27,14 +27,6 @@ namespace RetroGameFramework
 {
     internal class GameConfig
     {
-        public enum PressReleaseRaceConditionRule
-        {
-            PressWins,
-            ReleaseWins,
-            CallBoth,
-            CallNone
-        }
-
         public int PixelsMatrixWidth = 50;
         public int PixelsMatrixHeight = 50;
         public int PixelSize = 10;

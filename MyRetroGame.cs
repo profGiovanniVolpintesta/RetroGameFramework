@@ -22,12 +22,13 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing;
+using RetroGameFramework;
 
-namespace RetroGameFramework
+namespace RetroGameDemo
 {
-    internal class GameLogic : BaseGameLogic
+    internal class MyRetroGame : BaseGameLogic
     {
-        public GameLogic(GameConfig GameConfig) : base(GameConfig) { }
+        public MyRetroGame(GameConfig GameConfig) : base(GameConfig) { }
 
         // GameConfig is a variable already accessible in methods to retrieve the game configs
         // bool IsPaused() is a function already accessible in methods to check if the game is paused

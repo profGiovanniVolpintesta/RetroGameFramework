@@ -80,7 +80,7 @@ namespace RetroGameFramework
         static void Main(string[] args)
         {
             GameConfig GameConfig = new GameConfig();
-            BaseGameLogic GameLogic = new GameLogic(GameConfig);
+            BaseGameLogic GameLogic = new RetroGameDemo.MyRetroGame(GameConfig);
             GameLogic.InitGameConfig(GameConfig);
 
             // The screen matrix is transposed, so the number of rows is equal to the width of the screen
@@ -270,14 +270,14 @@ namespace RetroGameFramework
                     {
                         switch (GameConfig.PressReleaseRaceConditionPolicy)
                         {
-                            case GameConfig.PressReleaseRaceConditionRule.CallNone:
+                            case PressReleaseRaceConditionRule.CallNone:
                                 raiseKeyDown = false;
                                 raiseKeyUp = false;
                                 break;
-                            case GameConfig.PressReleaseRaceConditionRule.PressWins:
+                            case PressReleaseRaceConditionRule.PressWins:
                                 raiseKeyUp = false;
                                 break;
-                            case GameConfig.PressReleaseRaceConditionRule.ReleaseWins:
+                            case PressReleaseRaceConditionRule.ReleaseWins:
                                 raiseKeyDown = false;
                                 break;
                         }

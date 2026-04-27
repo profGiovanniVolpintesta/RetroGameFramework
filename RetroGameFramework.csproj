@@ -46,13 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums.cs" />
     <Compile Include="GameConfig.cs" />
     <Compile Include="GameForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="BaseGameLogic.cs" />
-    <Compile Include="GameLogic.cs" />
+    <Compile Include="GameImage.cs" />
+    <Compile Include="MyRetroGame.cs" />
     <Compile Include="GameUtils.cs" />
+    <Compile Include="PaintStyle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
